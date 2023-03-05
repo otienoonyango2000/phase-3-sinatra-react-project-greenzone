@@ -4,9 +4,22 @@ class ApplicationController < Sinatra::Base
   # Add your routes here
   get '/movies' do
     movies = Movie.all 
-    movies.to_json
+    movies.to_json(include: :reviews)
   end
 
+  get '/reviews' do
+    reviews = Review.all
+    reviews.to_json
+  end
+
+  post '/reviews' do
+    movie_id = params[:movie_id]
+    title = params[:title]
+    year = params[:year]
+    comment = params[:comment]
+
+    post = Review.create(title: title, year: year, comment: comment)
+  end
 
   #add movies
   post "/movies" do
@@ -15,8 +28,8 @@ class ApplicationController < Sinatra::Base
     runtime = params[:runtime]
     director = params[:director]
     actors = params[:actors]
-    plot = params[plot]
-    posterUrl = params[posterUrl]
+    plot = params[:plot]
+    posterUrl = params[:posterUrl]
 
     post = Movie.create(title: title, year: year, runtime: runtime, director: director, actors: actors,
     plot: plot, posterUrl: posterUrl)
@@ -30,21 +43,27 @@ class ApplicationController < Sinatra::Base
 
   end
 
- #edit
-  # patch '/movies/:id' do
-  #   check_movie_existence = Post.exists?(id: params[:id])
-  #   title = params[:title]
-  #   year = params[:year]
-  #   runtime = params[:runtime]
-  #   director = params[:director]
-  #   actors = params[:actors]
-  #   plot = params[plot]
-  #   posterUrl = params[posterUrl]
+  delete "/reviews/:id" do
+    count_revies = Review.where(id: params[:id]).count() 
+          reviews = Review.find(params[:id])
+          reviews.destroy
 
-  #   movie = Movie.find_by(id: params[:id])
-  #   Movie.update(title: title, year: year, runtime: runtime, director: director, actors: actors,
-  #   plot: plot, posterUrl: posterUrl)
-  #   # post.update(title: title, content: content, user_id: user)
-  # end
+  end
+
+ #edit
+  patch '/movies/:id' do
+    movie = Movie.find(params[:id])
+    movie.update(
+      title: params[:title],
+      year: params[:year],
+      runtime: params[:runtime],
+      director: params[:director],
+      actors: params[:actors],
+      plot: params[:plot],
+      posterUrl: params[:posterUrl]
+    )
+    movie.to_json
+    
+  end
 
 end
