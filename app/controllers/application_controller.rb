@@ -13,7 +13,7 @@ class ApplicationController < Sinatra::Base
   end
 
   post '/reviews' do
-    movie_id = params[:movie_id]
+    movie_id = params[:id]
     title = params[:title]
     year = params[:year]
     comment = params[:comment]
