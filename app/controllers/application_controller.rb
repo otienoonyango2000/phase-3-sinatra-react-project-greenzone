@@ -13,12 +13,12 @@ class ApplicationController < Sinatra::Base
   end
 
   post '/reviews' do
-    movie_id = params[:id]
+    movie_id = params[:movie_id]
     title = params[:title]
     year = params[:year]
     comment = params[:comment]
 
-    post = Review.create(title: title, year: year, comment: comment)
+    post = Review.create(movie_id: movie_id, title: title, year: year, comment: comment)
   end
 
   #add movies
